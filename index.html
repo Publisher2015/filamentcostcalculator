@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧵 Filament Cost Calculator</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+
+    background:
+        radial-gradient(circle at top left,#3b82f6 0%,transparent 30%),
+        radial-gradient(circle at bottom right,#8b5cf6 0%,transparent 30%),
+        linear-gradient(135deg,#0f172a,#111827);
+
+    color:white;
+}
+
+.card{
+    width:100%;
+    max-width:550px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+
+h1{
+    text-align:center;
+    font-size:2.2rem;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    opacity:.75;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    background:rgba(255,255,255,.1);
+    color:white;
+}
+
+input::placeholder{
+    color:rgba(255,255,255,.5);
+}
+
+input:focus{
+    outline:none;
+    box-shadow:0 0 15px rgba(59,130,246,.6);
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(59,130,246,.4);
+}
+
+.result{
+    margin-top:25px;
+    background:rgba(255,255,255,.06);
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+}
+
+.stat{
+    margin:15px 0;
+}
+
+.label{
+    opacity:.7;
+    font-size:.9rem;
+}
+
+.value{
+    font-size:2rem;
+    font-weight:bold;
+    color:#60a5fa;
+    text-shadow:0 0 20px rgba(96,165,250,.4);
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>🧵 Filament Cost Calculator</h1>
+
+    <div class="subtitle">
+        Calculate the true cost of every 3D print
+    </div>
+
+    <label>💷 Roll Cost (£)</label>
+    <input
+        type="number"
+        id="rollCost"
+        step="0.01"
+        placeholder="25.17">
+
+    <label>⚖️ Roll Weight (g)</label>
+    <input
+        type="number"
+        id="rollWeight"
+        value="1000">
+
+    <label>🧵 Print Weight (g)</label>
+    <input
+        type="number"
+        id="printWeight"
+        step="0.01"
+        placeholder="27.02">
+
+    <button onclick="calculateCost()">
+        🚀 Calculate Print Cost
+    </button>
+
+    <div class="result" id="result">
+
+        <div class="stat">
+            <div class="label">Ready to calculate</div>
+            <div class="value">£0.00</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function calculateCost(){
+
+    const rollCost =
+        parseFloat(document.getElementById('rollCost').value);
+
+    const rollWeight =
+        parseFloat(document.getElementById('rollWeight').value);
+
+    const printWeight =
+        parseFloat(document.getElementById('printWeight').value);
+
+    if(
+        isNaN(rollCost) ||
+        isNaN(rollWeight) ||
+        isNaN(printWeight)
+    ){
+        document.getElementById('result').innerHTML =
+        `
+        <div class="stat">
+            <div class="value">⚠️</div>
+            <div class="label">Please fill in all fields</div>
+        </div>
+        `;
+        return;
+    }
+
+    const costPerGram = rollCost / rollWeight;
+    const printCost = costPerGram * printWeight;
+
+    const remainingWeight = rollWeight - printWeight;
+    const remainingValue = rollCost - printCost;
+
+    document.getElementById('result').innerHTML = `
+        <div class="stat">
+            <div class="label">🧵 Print Weight</div>
+            <div class="value">${printWeight.toFixed(2)}g</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">💷 Print Cost</div>
+            <div class="value">£${printCost.toFixed(2)}</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">📦 Remaining Filament</div>
+            <div class="value">${remainingWeight.toFixed(0)}g</div>
+        </div>
+
+        <div class="stat">
+            <div class="label">💰 Remaining Value</div>
+            <div class="value">£${remainingValue.toFixed(2)}</div>
+        </div>
+    `;
+}
+
+</script>
+
+</body>
+</html>
